@@ -32,10 +32,11 @@ public class MainFrame extends JFrame {
         OeuvrePanel oeuvrePanel = new OeuvrePanel();
         ClientPanel clientPanel = new ClientPanel();
         VentePanel ventePanel = new VentePanel();
-
+        StatistiquesPanel statistiquesPanel = new StatistiquesPanel();
         tabs.addTab("Artworks & Store", oeuvrePanel);
         tabs.addTab("Client List", clientPanel);
         tabs.addTab("Sales History & Search", ventePanel);
+        tabs.addTab("Statistiques", statistiquesPanel);
 
         tabs.addChangeListener(e -> {
             int index = tabs.getSelectedIndex();
@@ -45,6 +46,8 @@ public class MainFrame extends JFrame {
                 clientPanel.loadClients();
             else if (index == 2)
                 ventePanel.loadAllSales();
+            else if (index == 3)
+                statistiquesPanel.refreshStats();
         });
 
         add(tabs, BorderLayout.CENTER);

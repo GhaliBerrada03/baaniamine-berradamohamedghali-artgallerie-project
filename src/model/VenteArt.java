@@ -38,4 +38,23 @@ return client;    }
     public void setIdVente(int idVente){
         this.idVente = idVente;
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VenteArt venteArt = (VenteArt) o;
+        return idVente == venteArt.idVente &&
+                java.util.Objects.equals(client, venteArt.client) &&
+                java.util.Objects.equals(ouvre, venteArt.ouvre);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(idVente, client, ouvre);
+    }
+
+    @Override
+    public String toString() {
+        return "VenteArt{id=" + idVente + ", client=" + client + ", oeuvre=" + ouvre + ", date=" + dateVente + "}";
+    }
 }

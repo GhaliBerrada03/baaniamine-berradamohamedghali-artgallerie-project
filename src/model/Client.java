@@ -3,7 +3,7 @@ public class Client {
     private int idClient;
     private String nom;
     private String email;
-    private String password; // 👈 added
+    private String password; //  added
 
     public Client(){}
     public Client(String nom, String email){
@@ -18,7 +18,24 @@ public class Client {
         this(idClient, nom, email);
         this.password = password;
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Client client = (Client) o;
+        return idClient == client.idClient &&
+                java.util.Objects.equals(email, client.email);
+    }
 
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(idClient, email);
+    }
+
+    @Override
+    public String toString() {
+        return "Client{id=" + idClient + ", nom='" + nom + "', email='" + email + "'}";
+    }
     public int getId_client(){ return idClient; }
     public void setId_client(int idClient){ this.idClient = idClient; }
 
