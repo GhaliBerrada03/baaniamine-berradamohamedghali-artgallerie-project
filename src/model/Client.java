@@ -18,19 +18,7 @@ public class Client {
         this(idClient, nom, email);
         this.password = password;
     }
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Client client = (Client) o;
-        return idClient == client.idClient &&
-                java.util.Objects.equals(email, client.email);
-    }
 
-    @Override
-    public int hashCode() {
-        return java.util.Objects.hash(idClient, email);
-    }
 
     @Override
     public String toString() {
@@ -46,5 +34,17 @@ public class Client {
     public void setEmail(String email){ this.email = email; }
 
     public String getPassword(){ return password; }
-    public void setPassword(String password){ this.password = password; }
+    public void setPassword(String password){ this.password = hashPassword(password); }
+
+    private String hashPassword(String password) {
+        try {
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(password.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hash) sb.append(String.format("%02x", b));
+            return sb.toString();
+        } catch (Exception e) {
+            throw new RuntimeException("Hashing failed", e);
+        }
+    }
 }

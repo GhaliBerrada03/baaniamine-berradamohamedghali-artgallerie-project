@@ -49,7 +49,7 @@ public class Clientdao implements daoInterface<Client> {
         try(PreparedStatement ps = Db_connection.getInstance().getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
             ps.setString(1, client.getNom());
             ps.setString(2, client.getEmail());
-            ps.setString(3, client.getPassword()); // added
+            ps.setString(3, hashPassword(client.getPassword())); // added
             int rows = ps.executeUpdate();
             if(rows == 1){
                 try(ResultSet key = ps.getGeneratedKeys()){
@@ -70,7 +70,7 @@ public class Clientdao implements daoInterface<Client> {
         try(PreparedStatement ps = Db_connection.getInstance().getConnection().prepareStatement(sql)){
             ps.setString(1, client.getNom());
             ps.setString(2, client.getEmail());
-            ps.setString(3, client.getPassword()); // added
+            ps.setString(3, client.getPassword());
             ps.setInt(4, client.getId_client());
             return ps.executeUpdate() == 1;
         }
@@ -85,15 +85,19 @@ public class Clientdao implements daoInterface<Client> {
         }
     }
 
-    // 👇 New method to update only the password
+
     public boolean updatePassword(int idClient, String newPassword) throws Exception {
         String sql = "UPDATE client SET password=? WHERE idClient=?";
         try(PreparedStatement ps = Db_connection.getInstance().getConnection().prepareStatement(sql)){
-            ps.setString(1, newPassword);
+            Client temp = new Client();
+            temp.setPassword(newPassword);
+            ps.setString(1, temp.getPassword());
             ps.setInt(2, idClient);
             return ps.executeUpdate() == 1;
         }
     }
+
+
 }
 
 

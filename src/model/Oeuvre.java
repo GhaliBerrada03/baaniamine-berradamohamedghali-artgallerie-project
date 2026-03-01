@@ -52,19 +52,7 @@ private String statut;
     }
     public void setStatut(String statut) {
         this.statut= statut;    }
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Oeuvre oeuvre = (Oeuvre) o;
-        return idOeuvre == oeuvre.idOeuvre &&
-                java.util.Objects.equals(titre, oeuvre.titre);
-    }
 
-    @Override
-    public int hashCode() {
-        return java.util.Objects.hash(idOeuvre, titre);
-    }
 
     @Override
     public String toString() {
