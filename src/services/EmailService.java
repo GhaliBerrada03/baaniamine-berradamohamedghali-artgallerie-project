@@ -1,11 +1,10 @@
 package services;
 
-import com.mysql.cj.Session;
 import jakarta.mail.*;
 import jakarta.mail.internet.*;
 
-import java.net.Authenticator;
 import java.util.Properties;
+
 
 public class EmailService {
 
