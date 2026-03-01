@@ -49,7 +49,7 @@ public class Clientdao implements daoInterface<Client> {
         try(PreparedStatement ps = Db_connection.getInstance().getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
             ps.setString(1, client.getNom());
             ps.setString(2, client.getEmail());
-            ps.setString(3, hashPassword(client.getPassword())); // added
+            ps.setString(3, client.getPassword()); // added
             int rows = ps.executeUpdate();
             if(rows == 1){
                 try(ResultSet key = ps.getGeneratedKeys()){
