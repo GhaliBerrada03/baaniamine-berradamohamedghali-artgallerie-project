@@ -22,10 +22,17 @@ public class ClientPanel extends JPanel {
     private static final String APP_PASSWORD = "febk dksr mrqa ejax";
 
     public ClientPanel() {
-        setLayout(new BorderLayout());
-        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        setLayout(new BorderLayout(10, 10));
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        setBackground(ThemeManager.BACKGROUND);
 
-        // Table
+        // Header Title
+        JLabel titleLabel = new JLabel("Client Management & Communication");
+        titleLabel.setFont(ThemeManager.FONT_SUBTITLE);
+        titleLabel.setForeground(ThemeManager.PRIMARY);
+        add(titleLabel, BorderLayout.NORTH);
+
+        // Table Styling
         String[] columnNames = { "ID", "Name", "Email" };
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -34,19 +41,26 @@ public class ClientPanel extends JPanel {
             }
         };
         clientTable = new JTable(tableModel);
-        add(new JScrollPane(clientTable), BorderLayout.CENTER);
+        ThemeManager.styleTable(clientTable);
+
+        JScrollPane scrollPane = new JScrollPane(clientTable);
+        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(210, 210, 210)));
+        add(scrollPane, BorderLayout.CENTER);
 
         // Buttons Panel
-        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
+        btnPanel.setOpaque(false);
 
-        JButton refreshBtn = new JButton("Refresh Clients");
+        JButton refreshBtn = ThemeManager.createModernButton("REFRESH CLIENTS");
+        JButton sendEmailBtn = ThemeManager.createModernButton("SEND CORRESPONDENCE");
+        sendEmailBtn.setBackground(ThemeManager.SECONDARY);
+        sendEmailBtn.setForeground(ThemeManager.PRIMARY);
+
         refreshBtn.addActionListener(e -> loadClients());
-        btnPanel.add(refreshBtn);
-
-        JButton sendEmailBtn = new JButton("Send Email");
         sendEmailBtn.addActionListener(e -> sendEmailToSelectedClient());
-        btnPanel.add(sendEmailBtn);
 
+        btnPanel.add(refreshBtn);
+        btnPanel.add(sendEmailBtn);
         add(btnPanel, BorderLayout.SOUTH);
 
         loadClients();

@@ -8,36 +8,62 @@ import java.awt.*;
 
 public class MainFrame extends JFrame {
     public MainFrame() {
-        setTitle("Art Gallery Management System");
-        setSize(900, 600);
+        ThemeManager.applyTheme();
+        setTitle("Art Gallery Premium Dashboard");
+        setSize(1100, 750);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        getContentPane().setBackground(ThemeManager.BACKGROUND);
 
-        // Header info
+        // Custom Modern Header
         Client user = SessionManager.getInstance().getCurrentClient();
         JPanel header = new JPanel(new BorderLayout());
-        header.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-        header.add(new JLabel("Current User: " + (user != null ? user.getNom() : "Guest")), BorderLayout.WEST);
+        header.setBackground(ThemeManager.PRIMARY);
+        header.setPreferredSize(new Dimension(1100, 70));
+        header.setBorder(BorderFactory.createEmptyBorder(10, 25, 10, 25));
 
-        JButton logoutBtn = new JButton("Logout");
+        JLabel titleLabel = new JLabel("GALERIE D'ART");
+        titleLabel.setFont(ThemeManager.FONT_TITLE);
+        titleLabel.setForeground(ThemeManager.WHITE);
+        header.add(titleLabel, BorderLayout.WEST);
+
+        JPanel userPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
+        userPanel.setOpaque(false);
+
+        JLabel userLabel = new JLabel("Welcome, " + (user != null ? user.getNom() : "Guest"));
+        userLabel.setFont(ThemeManager.FONT_BOLD);
+        userLabel.setForeground(ThemeManager.SECONDARY);
+
+        JButton logoutBtn = ThemeManager.createModernButton("LOGOUT");
+        logoutBtn.setMargin(new Insets(2, 5, 2, 5));
+        logoutBtn.setPreferredSize(new Dimension(100, 35));
         logoutBtn.addActionListener(e -> {
             SessionManager.getInstance().setCurrentClient(null);
             dispose();
             new LoginFrame().setVisible(true);
         });
-        header.add(logoutBtn, BorderLayout.EAST);
+
+        userPanel.add(userLabel);
+        userPanel.add(logoutBtn);
+        header.add(userPanel, BorderLayout.EAST);
+
         add(header, BorderLayout.NORTH);
 
-        // Tabbed Pane
+        // Tabbed Pane - Modern Styling Attempt
         JTabbedPane tabs = new JTabbedPane();
+        tabs.setFont(ThemeManager.FONT_BOLD);
+        tabs.setBackground(ThemeManager.WHITE);
+        tabs.setForeground(ThemeManager.PRIMARY);
+
         OeuvrePanel oeuvrePanel = new OeuvrePanel();
         ClientPanel clientPanel = new ClientPanel();
         VentePanel ventePanel = new VentePanel();
         StatistiquesPanel statistiquesPanel = new StatistiquesPanel();
-        tabs.addTab("Artworks & Store", oeuvrePanel);
-        tabs.addTab("Client List", clientPanel);
-        tabs.addTab("Sales History & Search", ventePanel);
-        tabs.addTab("Statistiques", statistiquesPanel);
+
+        tabs.addTab(" GALLERY STORE ", oeuvrePanel);
+        tabs.addTab(" CLIENT  ", clientPanel);
+        tabs.addTab(" SALES ARCHIVE ", ventePanel);
+        tabs.addTab(" ANALYTICS ", statistiquesPanel);
 
         tabs.addChangeListener(e -> {
             int index = tabs.getSelectedIndex();

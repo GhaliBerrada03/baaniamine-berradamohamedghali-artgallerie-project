@@ -15,14 +15,39 @@ import java.util.List;
 public class OeuvrePanel extends JPanel {
     private JTable oeuvreTable;
     private DefaultTableModel tableModel;
+    private JComboBox<String> statusFilter;
     private OeuvreServices oeuvreServices = new OeuvreServices();
     private VenteArtService venteArtService = new VenteArtService();
 
     public OeuvrePanel() {
-        setLayout(new BorderLayout());
-        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        setLayout(new BorderLayout(10, 10));
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        setBackground(ThemeManager.BACKGROUND);
 
-        // Table
+        // Header Top
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setOpaque(false);
+
+        JLabel titleLabel = new JLabel("Collections & Acquisitions");
+        titleLabel.setFont(ThemeManager.FONT_SUBTITLE);
+        titleLabel.setForeground(ThemeManager.PRIMARY);
+        topPanel.add(titleLabel, BorderLayout.WEST);
+
+        // Filter UI
+        JPanel filterUI = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        filterUI.setOpaque(false);
+        filterUI.add(new JLabel("FILTER BY STATUS:"));
+
+        statusFilter = new JComboBox<>(new String[] { "ALL", "DISPONIBLE", "VENDUE" });
+        statusFilter.setFont(ThemeManager.FONT_BOLD);
+        statusFilter.setPreferredSize(new Dimension(150, 30));
+        statusFilter.addActionListener(e -> loadArtworks());
+        filterUI.add(statusFilter);
+
+        topPanel.add(filterUI, BorderLayout.EAST);
+        add(topPanel, BorderLayout.NORTH);
+
+        // Table Styling
         String[] columnNames = { "ID", "Title", "Artist", "Category", "Price", "Status" };
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -30,13 +55,22 @@ public class OeuvrePanel extends JPanel {
                 return false;
             }
         };
+
         oeuvreTable = new JTable(tableModel);
-        add(new JScrollPane(oeuvreTable), BorderLayout.CENTER);
+        ThemeManager.styleTable(oeuvreTable);
+
+        JScrollPane scrollPane = new JScrollPane(oeuvreTable);
+        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(210, 210, 210)));
+        add(scrollPane, BorderLayout.CENTER);
 
         // Buttons
-        JPanel btnPanel = new JPanel();
-        JButton refreshBtn = new JButton("Refresh Artworks");
-        JButton buyBtn = new JButton("Buy Selected");
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
+        btnPanel.setOpaque(false);
+
+        JButton refreshBtn = ThemeManager.createModernButton("REFRESH LIST");
+        JButton buyBtn = ThemeManager.createModernButton("ACQUIRE ARTWORK");
+        buyBtn.setBackground(ThemeManager.SECONDARY);
+        buyBtn.setForeground(ThemeManager.PRIMARY);
 
         btnPanel.add(refreshBtn);
         btnPanel.add(buyBtn);
@@ -51,16 +85,25 @@ public class OeuvrePanel extends JPanel {
 
     public void loadArtworks() {
         tableModel.setRowCount(0);
+        String selectedStatus = (String) statusFilter.getSelectedItem();
+
         try {
             List<Oeuvre> oeuvres = oeuvreServices.findAllOeuvre();
             for (Oeuvre o : oeuvres) {
+                String status = o.getStatut() == null ? "DISPONIBLE" : o.getStatut();
+
+                // Filtering Logic
+                if (!"ALL".equals(selectedStatus) && !selectedStatus.equals(status)) {
+                    continue;
+                }
+
                 tableModel.addRow(new Object[] {
                         o.getIdOeuvre(),
                         o.getTitre(),
                         o.getArtiste(),
                         o.getCategorie(),
                         o.getPrix() + " €",
-                        o.getStatut() == null ? "DISPONIBLE" : o.getStatut()
+                        status
                 });
             }
         } catch (Exception e) {

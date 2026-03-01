@@ -1,0 +1,2 @@
+Main-Class: ui.LoginFrame
+Class-Path: lib/jakarta.mail-2.0.1.jar lib/mysql-connector-j-9.6.0.jar lib/jcalendar-1.4.jar lib/jakarta.activation-api-2.0.1.jar

@@ -22,26 +22,36 @@ public class VentePanel extends JPanel {
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public VentePanel() {
-        setLayout(new BorderLayout());
-        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        setLayout(new BorderLayout(10, 10));
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        setBackground(ThemeManager.BACKGROUND);
 
         // Filter UI
-        JPanel filterPanel = new JPanel();
+        JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        filterPanel.setOpaque(false);
 
-        filterPanel.add(new JLabel("From:"));
+        JLabel fromLabel = new JLabel("PERIOD FROM:");
+        fromLabel.setFont(ThemeManager.FONT_BOLD);
+        filterPanel.add(fromLabel);
+
         startDateChooser = new JDateChooser();
-        startDateChooser.setPreferredSize(new Dimension(120, 25));
+        startDateChooser.setPreferredSize(new Dimension(150, 30));
         startDateChooser.setDateFormatString("yyyy-MM-dd");
         filterPanel.add(startDateChooser);
 
-        filterPanel.add(new JLabel("To:"));
+        JLabel toLabel = new JLabel("TO:");
+        toLabel.setFont(ThemeManager.FONT_BOLD);
+        filterPanel.add(toLabel);
+
         endDateChooser = new JDateChooser();
-        endDateChooser.setPreferredSize(new Dimension(120, 25));
+        endDateChooser.setPreferredSize(new Dimension(150, 30));
         endDateChooser.setDateFormatString("yyyy-MM-dd");
         filterPanel.add(endDateChooser);
 
-        JButton searchBtn = new JButton("Search Range");
-        JButton resetBtn = new JButton("Reset");
+        JButton searchBtn = ThemeManager.createModernButton("FILTER SALES");
+        JButton resetBtn = ThemeManager.createModernButton("RESET");
+        resetBtn.setBackground(ThemeManager.ACCENT);
+
         filterPanel.add(searchBtn);
         filterPanel.add(resetBtn);
         add(filterPanel, BorderLayout.NORTH);
@@ -55,7 +65,11 @@ public class VentePanel extends JPanel {
             }
         };
         salesTable = new JTable(tableModel);
-        add(new JScrollPane(salesTable), BorderLayout.CENTER);
+        ThemeManager.styleTable(salesTable);
+
+        JScrollPane scrollPane = new JScrollPane(salesTable);
+        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(210, 210, 210)));
+        add(scrollPane, BorderLayout.CENTER);
 
         // Listeners
         searchBtn.addActionListener(e -> filterSales());

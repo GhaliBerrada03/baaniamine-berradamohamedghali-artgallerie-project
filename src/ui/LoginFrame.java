@@ -14,37 +14,83 @@ public class LoginFrame extends JFrame {
     private ClientService clientService = new ClientService();
 
     public LoginFrame() {
-        setTitle("Art Gallery - Login");
-        setSize(400, 300);
+        ThemeManager.applyTheme();
+        setTitle("Art Gallery - Premium Access");
+        setSize(450, 550);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setResizable(false);
         setLayout(new BorderLayout());
 
-        JPanel panel = new JPanel(new GridLayout(5, 1, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        // Main Panel
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(40, 50, 40, 50));
+        mainPanel.setBackground(ThemeManager.WHITE);
 
-        JLabel emailLabel = new JLabel("Email:");
-        emailField = new JTextField();
+        // Header / Logo area
+        JLabel titleLabel = new JLabel("ART GALLERY");
+        titleLabel.setFont(ThemeManager.FONT_TITLE);
+        titleLabel.setForeground(ThemeManager.PRIMARY);
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel passwordLabel = new JLabel("Password:");
-        passwordField = new JPasswordField();
+        JLabel subtitleLabel = new JLabel("Management System");
+        subtitleLabel.setFont(ThemeManager.FONT_REGULAR);
+        subtitleLabel.setForeground(ThemeManager.SECONDARY);
+        subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        loginButton = new JButton("Login");
+        // Form fields
+        JLabel emailLabel = new JLabel("Email Address");
+        emailLabel.setFont(ThemeManager.FONT_BOLD);
+        emailLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        emailField = ThemeManager.createModernTextField();
+        emailField.setMaximumSize(new Dimension(400, 40));
 
-        JButton forgotPasswordBtn = new JButton("Forgot Password?");
+        JLabel passwordLabel = new JLabel("Password");
+        passwordLabel.setFont(ThemeManager.FONT_BOLD);
+        passwordLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        passwordField = ThemeManager.createModernPasswordField();
+        passwordField.setMaximumSize(new Dimension(400, 40));
+
+        loginButton = ThemeManager.createModernButton("SIGN IN");
+        loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        loginButton.setMaximumSize(new Dimension(400, 45));
+
+        JButton forgotPasswordBtn = new JButton("Forgot your password?");
+        forgotPasswordBtn.setFont(new Font("Segoe UI", Font.ITALIC, 12));
         forgotPasswordBtn.setBorderPainted(false);
         forgotPasswordBtn.setContentAreaFilled(false);
-        forgotPasswordBtn.setForeground(Color.BLUE);
+        forgotPasswordBtn.setForeground(ThemeManager.TEXT_SECONDARY);
         forgotPasswordBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        forgotPasswordBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        panel.add(emailLabel);
-        panel.add(emailField);
-        panel.add(passwordLabel);
-        panel.add(passwordField);
-        panel.add(forgotPasswordBtn);
+        // Adding components with spacing
+        mainPanel.add(titleLabel);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        mainPanel.add(subtitleLabel);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 40)));
 
-        add(panel, BorderLayout.CENTER);
-        add(loginButton, BorderLayout.SOUTH);
+        mainPanel.add(emailLabel);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        mainPanel.add(emailField);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+
+        mainPanel.add(passwordLabel);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        mainPanel.add(passwordField);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 30)));
+
+        mainPanel.add(loginButton);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+        mainPanel.add(forgotPasswordBtn);
+
+        add(mainPanel, BorderLayout.CENTER);
+
+        // Footer decoration
+        JPanel footer = new JPanel();
+        footer.setPreferredSize(new Dimension(450, 10));
+        footer.setBackground(ThemeManager.PRIMARY);
+        add(footer, BorderLayout.SOUTH);
 
         loginButton.addActionListener(e -> performLogin());
         forgotPasswordBtn.addActionListener(e -> handleForgotPassword());
@@ -54,7 +100,8 @@ public class LoginFrame extends JFrame {
         String email = emailField.getText().trim();
         if (email.isEmpty()) {
             email = JOptionPane.showInputDialog(this, "Enter your email to reset password:");
-            if (email == null || email.trim().isEmpty()) return;
+            if (email == null || email.trim().isEmpty())
+                return;
             email = email.trim();
         }
 
@@ -74,10 +121,12 @@ public class LoginFrame extends JFrame {
                 if (success) {
                     JOptionPane.showMessageDialog(this, "A new password has been sent to " + email);
                 } else {
-                    JOptionPane.showMessageDialog(this, "Failed to reset password. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Failed to reset password. Please try again.", "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Email not found in our database.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Email not found in our database.", "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -86,18 +135,19 @@ public class LoginFrame extends JFrame {
     }
 
     private void performLogin() {
-        String email    = emailField.getText().trim();
+        String email = emailField.getText().trim();
         String password = new String(passwordField.getPassword()).trim();
 
         if (email.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter both email and password", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please enter both email and password", "Error",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         try {
             List<Client> clients = clientService.showClients();
 
-            Client foundClient   = null;
+            Client foundClient = null;
             Client clientToReset = null;
             boolean emailMatched = false;
 
@@ -127,7 +177,8 @@ public class LoginFrame extends JFrame {
                 new MainFrame().setVisible(true);
 
             } else if (!emailMatched) {
-                JOptionPane.showMessageDialog(this, "Email not found: " + email, "Login Failed", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Email not found: " + email, "Login Failed",
+                        JOptionPane.ERROR_MESSAGE);
 
             } else {
                 // Wrong password → auto send reset email
@@ -138,17 +189,20 @@ public class LoginFrame extends JFrame {
                             "Incorrect password.\n\nA new password has been automatically sent to " + email + "!",
                             "Security Notification", JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(this, "Incorrect password. Failed to send reset email.", "Login Failed", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Incorrect password. Failed to send reset email.",
+                            "Login Failed", JOptionPane.ERROR_MESSAGE);
                 }
             }
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error during login: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error during login: " + ex.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
     public static void main(String[] args) {
+        ThemeManager.applyTheme();
         SwingUtilities.invokeLater(() -> new LoginFrame().setVisible(true));
     }
 }
@@ -157,14 +211,24 @@ class SessionManager {
     private static SessionManager instance;
     private Client currentClient;
 
-    private SessionManager() {}
+    private SessionManager() {
+    }
 
     public static synchronized SessionManager getInstance() {
-        if (instance == null) instance = new SessionManager();
+        if (instance == null)
+            instance = new SessionManager();
         return instance;
     }
 
-    public Client getCurrentClient() { return currentClient; }
-    public void setCurrentClient(Client currentClient) { this.currentClient = currentClient; }
-    public boolean isLoggedIn() { return currentClient != null; }
+    public Client getCurrentClient() {
+        return currentClient;
+    }
+
+    public void setCurrentClient(Client currentClient) {
+        this.currentClient = currentClient;
+    }
+
+    public boolean isLoggedIn() {
+        return currentClient != null;
+    }
 }
