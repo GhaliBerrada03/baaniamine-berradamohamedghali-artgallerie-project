@@ -8,6 +8,12 @@ Un système de gestion de galerie d'art basé sur une application desktop dével
 ![SMTP](https://img.shields.io/badge/Email-Jakarta%20Mail-D14836?style=for-the-badge&logo=gmail&logoColor=white)
 
 ---
+## 🎬 Démonstration
+
+
+https://github.com/user-attachments/assets/fbd1883b-11a1-4a0f-946c-718c65f77d55
+
+
 
 ## 📌 1. Aperçu du Projet
 
